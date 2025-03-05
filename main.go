@@ -2,45 +2,40 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
+	"github.com/EmelinDanila/telegram-bot-crm/internal/handlers"
+	"github.com/EmelinDanila/telegram-bot-crm/internal/storage"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-
-	"github.com/EmelinDanila/telegram-bot-crm/internal/storage"
 )
 
 func main() {
-	// Load environment variables from.env file
+	// Загружаем переменные окружения
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading.env file")
+		log.Println("Ошибка загрузки .env файла")
 	}
+
+	// Инициализируем базу данных
+	err = storage.InitDB()
+	if err != nil {
+		log.Fatal("Ошибка инициализации БД:", err)
+	}
+
+	router := gin.Default()
+
+	// Эндпоинт для тестовых вебхуков (эмуляция AmoCRM)
+	router.POST("/send", handlers.TestWebhookHandler)
+
+	// Эндпоинт для обработки команд Telegram-бота
+	router.POST("/telegram", handlers.TelegramHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Fatal("PORT environment variable not set")
+		port = "8080"
 	}
 
-	err = storage.InitDB()
-	if err != nil {
-		log.Fatal("Error initializing database: ", err)
-	}
-	router := gin.Default()
-
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-
-	router.GET("/hello", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello, World!",
-		})
-	})
-
-	log.Println("Server started on port: ", port)
+	log.Println("Сервер запущен на порту:", port)
 	router.Run(":" + port)
 }
