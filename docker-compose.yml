@@ -1,7 +1,20 @@
 services:
   bot:
     build: .
+    container_name: telegram-bot-crm
     ports:
       - "8080:8080"
     env_file:
       - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: nouchka/sqlite3:latest
+    container_name: sqlite-db
+    volumes:
+      - ./subscribers.db:/data/subscribers.db
+    environment:
+      - SQLITE_DB_PATH=/data/subscribers.db

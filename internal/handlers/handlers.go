@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TelegramHandler обрабатывает команды бота
+// TelegramHandler processes the commands of the bot
 func TelegramHandler(c *gin.Context) {
 	var update services.TelegramUpdate
 	if err := c.ShouldBindJSON(&update); err != nil {
@@ -43,7 +43,7 @@ func TelegramHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
-// TestWebhookHandler эмулирует вебхук от AmoCRM
+// Testwebhookhandler Emulor Vedhuk from AMOCRM
 func TestWebhookHandler(c *gin.Context) {
 	var payload map[string]interface{}
 
@@ -53,11 +53,9 @@ func TestWebhookHandler(c *gin.Context) {
 		return
 	}
 
-	// Формируем сообщение
 	message, _ := json.Marshal(payload)
 	log.Println("Получено уведомление:", string(message))
 
-	// Отправка уведомления подписчикам
 	services.SendToSubscribers(string(message))
 
 	c.JSON(http.StatusOK, gin.H{"status": "notification sent"})

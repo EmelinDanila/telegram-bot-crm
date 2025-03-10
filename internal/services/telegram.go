@@ -21,7 +21,7 @@ type TelegramUpdate struct {
 	} `json:"message"`
 }
 
-// SendTelegramMessage отправляет сообщение в Telegram
+// SendTelegramMessage sends a message to Telegram
 func SendTelegramMessage(chatID int64, message string) {
 	token := os.Getenv("TELEGRAM_BOT_TOKEN")
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
@@ -40,19 +40,17 @@ func SendTelegramMessage(chatID int64, message string) {
 	}
 }
 
-// SendToSubscribers отправляет сообщение всем подписчикам
+// Sendtosubscribers sends a message to all subscribers
 func SendToSubscribers(message string) {
 	subscribers, _ := storage.GetSubscribers()
 
 	for _, chatIDStr := range subscribers {
-		// Преобразуем chatID из строки в int64
 		chatID, err := strconv.ParseInt(chatIDStr, 10, 64)
 		if err != nil {
 			log.Println("Ошибка при преобразовании chatID:", err)
 			continue
 		}
 
-		// Отправляем сообщение
 		SendTelegramMessage(chatID, message)
 	}
 }

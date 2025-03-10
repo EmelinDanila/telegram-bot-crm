@@ -8,6 +8,7 @@ import (
 
 const dbFile = "./subscribers.db"
 
+// InitDB initializes the database and creates the subscribers table if it doesn't exist
 func InitDB() error {
 	db, err := sql.Open("sqlite", dbFile)
 	if err != nil {
@@ -19,6 +20,7 @@ func InitDB() error {
 	return err
 }
 
+// AddSubscriber adds a new subscriber to the database
 func AddSubscriber(chatID int64) error {
 	db, _ := sql.Open("sqlite", dbFile)
 	defer db.Close()
@@ -27,6 +29,7 @@ func AddSubscriber(chatID int64) error {
 	return err
 }
 
+// RemoveSubscriber removes a subscriber from the database by chat ID
 func RemoveSubscriber(chatID int64) error {
 	db, _ := sql.Open("sqlite", dbFile)
 	defer db.Close()
@@ -35,6 +38,7 @@ func RemoveSubscriber(chatID int64) error {
 	return err
 }
 
+// GetSubscribers retrieves all subscriber chat IDs from the database
 func GetSubscribers() ([]string, error) {
 	db, _ := sql.Open("sqlite", dbFile)
 	defer db.Close()

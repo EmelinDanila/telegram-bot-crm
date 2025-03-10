@@ -11,13 +11,13 @@ import (
 )
 
 func main() {
-	// Загружаем переменные окружения
+	// We load the variables of the environment
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Ошибка загрузки .env файла")
 	}
 
-	// Инициализируем базу данных
+	// Initialize the database
 	err = storage.InitDB()
 	if err != nil {
 		log.Fatal("Ошибка инициализации БД:", err)
@@ -25,10 +25,10 @@ func main() {
 
 	router := gin.Default()
 
-	// Эндпоинт для тестовых вебхуков (эмуляция AmoCRM)
+	// EndPome for test webhuki (AMOCRM emulation)
 	router.POST("/send", handlers.TestWebhookHandler)
 
-	// Эндпоинт для обработки команд Telegram-бота
+	//Endpoint for processing Telegram Bota commands
 	router.POST("/telegram", handlers.TelegramHandler)
 
 	port := os.Getenv("PORT")
